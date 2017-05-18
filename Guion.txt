@@ -1,0 +1,14 @@
+Enunciado: Cargar en vuestra base de datos de la cuenta MongoDB disponible en Hadoop.ugr.es
+ el archivo /var/tmp/restaurantes1.json conforme se indica en la transparencia 43 de la
+ presentación sobre NoSQL. Elaborar el código MapReduce que resuelva la consulta:
+
+"Obtener el par de restaurantes más próximos en cada barrio (borough), mostrando el nombre
+ y tipo de cocina de esos restaurantes, la distancia entre ellos y la cantidad de
+ restaurantes evaluados para cada barrio, para aquellos restaurantes que hayan tenido un
+ grado= ‘A’ en alguna ocasión"
+
+El resultado del ejercicio será un archivo con el código que resuelve la consulta (según
+ el formato mostrado en la transparencia 17 del tutorial) y que podrá ser ejecutado
+ directamente sobre su base de datos MongoDB de hadoop.ugr.es, la cual que debe incluir
+ la colección restaurants importada y la colección rest_resultado con los documentos
+ resultado de la consulta propuesta.

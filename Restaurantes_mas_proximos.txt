@@ -1,0 +1,54 @@
+db.runCommand({ mapReduce: "restaurants",
+ map : function Map() {
+	var key = this.borough;
+	emit(key, {
+		"data":
+		[
+			{
+				"name" : this.name,
+				"cuisine" : this.cuisine,
+				"grades" : this.grades,
+				"lat"  : this.address.coord[0],
+				"lon"  : this.address.coord[1]
+			}
+		]
+	});
+},
+ reduce : function Reduce(key, values) {
+	var reduced = {"data":[]};
+	for (var i in values) {
+		var inter = values[i];
+		for (var j in inter.data) {
+			reduced.data.push(inter.data[j]);
+		}
+	}
+	return reduced;
+},
+ finalize : function Finalize(key, reduced) {
+	if (reduced.data.length == 1) {
+		return { "message" : "Este barrio sólo tiene un restaurante" };
+	}
+	var min_dist = 999999999999;
+	var res1 = { "name": "" };
+	var res2 = { "name": "" };
+	var c1;
+	var c2;
+	var d;
+	for (var i in reduced.data) {
+		for (var j in reduced.data) {
+			if (i>=j) continue;
+			c1 = reduced.data[i];
+			c2 = reduced.data[j];
+			d = (c1.lat-c2.lat)*(c1.lat-c2.lat)+(c1.lon-c2.lon)*(c1.lon-c2.lon);
+			if (d < min_dist && d > 0) {
+				min_dist = d;
+				res1 = c1;
+				res2 = c2;
+			}
+		}
+	}
+	return {"res1": res1.name, "Cocina1": res1.cuisine, "res2": res2.name, "Cocina2": res2.cuisine, "dist": Math.sqrt(min_dist),"Cuenta":reduced.data.length};
+},
+ query : {'grades.grade' : {$eq: "A"}},
+ out: { replace: "rest_resultado" }
+ });
